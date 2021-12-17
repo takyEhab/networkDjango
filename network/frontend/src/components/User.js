@@ -39,7 +39,6 @@ export default function User({ match, history }) {
       .then(res => {
         setUser(res.data);
       })
-      .catch(err => console.log(err.response))
   }
 
   const GetUserPosts = useCallback(async () => {
@@ -60,7 +59,7 @@ export default function User({ match, history }) {
   };
   const follow = (id) => {
     api.patch(`follow/${id}/`, {}, CONFIG)
-      .then(res => { console.log(res.data); GetUser() })
+      .then(() => GetUser())
   }
 
   const postPerPage = 10

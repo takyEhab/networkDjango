@@ -5,7 +5,6 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Typography from '@mui/material/Typography';
 import { blue } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -17,6 +16,7 @@ import Button from "@mui/material/Button";
 import Alert from '@mui/material/Alert';
 import Slide from '@mui/material/Slide';
 import EditIcon from '@mui/icons-material/Edit';
+import { useSnackbar } from 'notistack';
 
 export default function RecipeReviewCard(props) {
   const { state, refresh, CONFIG } = useContext(UserContext)
@@ -24,6 +24,7 @@ export default function RecipeReviewCard(props) {
   const [edit, setEdit] = useState(props.post.post)
   const [isErr, setErr] = React.useState(false)
   const [isEdit, setIsEdit] = useState(true)
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     if (props.post.UsersLikes.includes(state.isLogedIn && state.myInfo.id)) {
@@ -53,6 +54,8 @@ export default function RecipeReviewCard(props) {
   const HandleClick = () => {
     if (edit.length > 5) {
       editPost(edit, props.post.id)
+      enqueueSnackbar('Post Edited!', { variant: 'info' });
+      
       setIsEdit(true);
     } else { setErr(true) }
   }
@@ -73,7 +76,7 @@ export default function RecipeReviewCard(props) {
   }
 
 
-  const cardStyle = { backgroundColor: 'secondary', textAlign: 'center', width: 'auto', margin: 'auto', marginTop: '2%' }
+  const cardStyle = { textAlign: 'center', width: 'auto', margin: 'auto', marginTop: '2%' }
 
   return (
     <Card style={cardStyle} sx={{ maxWidth: 550 }}>
@@ -122,7 +125,6 @@ export default function RecipeReviewCard(props) {
             </Slide>
           </>
         }
-        {/* */}
 
       </CardContent>
 

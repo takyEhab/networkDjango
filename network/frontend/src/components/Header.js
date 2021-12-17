@@ -12,6 +12,7 @@ import Divider from "@mui/material/Divider";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import List from "@mui/material/List";
 import Button from "@mui/material/Button";
+import { useSnackbar } from 'notistack';
 import {
   BrowserRouter as Router,
   Switch,
@@ -44,10 +45,15 @@ const linkStyle = {
 
 export default function Header() {
   const { state, CONFIG, dispatch } = useContext(UserContext)
+  const { enqueueSnackbar } = useSnackbar();
 
   const logout = () => {
     api.post(`logout/`, {}, CONFIG)
-      .then(() => dispatch({ type: 'NotLogedIn' }))
+      .then(() => {
+        dispatch({ type: 'NotLogedIn' })
+        enqueueSnackbar('Loged out!', { variant: 'info' });
+
+      })
   }
 
   if (state.isLogedIn) {
@@ -55,7 +61,7 @@ export default function Header() {
       { name: state.myInfo.username, href: `/profile/${state.myInfo.username}` },
       { name: "All Posts", href: "/" },
       { name: "Following", href: "/following" },
-      { name: "Log out", href: "#" },
+      { name: "Log out", href: "/" },
     ]
   } else {
     navigationLinks = [

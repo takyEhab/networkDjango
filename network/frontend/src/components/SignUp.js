@@ -3,8 +3,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-// import FormControlLabel from '@mui/material/FormControlLabel';
-// import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -49,7 +47,6 @@ export default function SignUp(props) {
   const register = async (username, email, password, password2) => {
     try {
       let res = await api.post('register/', { username, email, password, password2 });
-      console.log(res.data);
       localStorage.setItem('knox', res.data.token)
       dispatch({ type: 'LogedIn', payload: res.data.user });
 
@@ -68,8 +65,6 @@ export default function SignUp(props) {
             setError({ close: false, isError: true, message: message[errors[i]].isArray ? message[errors[i]][0] : message[errors[i]] })
           }
         }
-      } else {
-        console.log(err)
       }
     }
   }

@@ -49,7 +49,6 @@ export default function SignIn() {
   const login = async (username, password) => {
     try {
       let res = await api.post('login/', { username, password });
-      console.log(res.data.token);
       localStorage.setItem('knox', res.data.token)
 
       dispatch({ type: 'LogedIn', payload: res.data.user });
@@ -60,7 +59,6 @@ export default function SignIn() {
       if (err.response) {
         setError({ close: false, isError: true, message: err.response.data['non_field_errors'][0] })
       }
-      console.log(err)
     }
   }
 
@@ -110,10 +108,6 @@ export default function SignIn() {
               type="password"
               id="password"
               autoComplete="current-password"
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
             />
 
             <Slide direction="up" in={error.isError} mountOnEnter unmountOnExit>

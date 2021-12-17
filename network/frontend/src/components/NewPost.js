@@ -3,13 +3,15 @@ import TextField from "@mui/material/TextField";
 import Button from '@mui/material/Button'
 import Alert from '@mui/material/Alert';
 import Slide from '@mui/material/Slide';
-import { UserContext } from './userContext'
+import { UserContext } from './userContext';
+import { useSnackbar } from 'notistack';
 import { api } from './axios'
 
 export default function NewPost(props) {
   const [post, setPost] = React.useState('')
   const [isErr, setErr] = React.useState(false)
   const { refresh, CONFIG } = useContext(UserContext)
+  const { enqueueSnackbar } = useSnackbar();
 
   const AddPost = (post) => {
     api.post('posts/', { post }, CONFIG).then(() => refresh())
@@ -22,6 +24,9 @@ export default function NewPost(props) {
   const HandleClick = () => {
     if (post.length > 5) {
       AddPost(post)
+
+      enqueueSnackbar('Posted', { variant: 'success' });
+
       props.setOpen(false);
     } else { setErr(true) }
   }
