@@ -10,8 +10,8 @@ import User from './components/User';
 import Posts from './components/Posts';
 import { SnackbarProvider } from 'notistack';
 import {
-  HashRouter as Router,
-  // BrowserRouter as Router,
+  // HashRouter as Router,
+  BrowserRouter as Router,
   Switch,
   Route,
   Link
