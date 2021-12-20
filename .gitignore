@@ -1,2 +1,4 @@
 node_modules/
 *.pyc
+network/db.sqlite3
+network/.env
