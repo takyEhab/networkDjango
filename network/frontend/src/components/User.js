@@ -35,7 +35,7 @@ export default function User({ match, history }) {
   }, [state.myInfo, match.params.name])
 
   const GetUser = () => {
-    api.get(`user/${match.params.name}`)
+    api.get(`user/${match.params.name}/`)
       .then(res => {
         setUser(res.data);
       })
@@ -98,9 +98,10 @@ export default function User({ match, history }) {
           <h1>following :{user && user.following.length}</h1>
         </> :
         <CircularProgress />}
-      {(state.isLogedIn && !isSame) &&
-        <Button aria-describedby={id} onClick={handleClick} variant="contained">{isFollowed ? 'Unfollow' : 'Follow'}</Button>
-
+      {!isSame &&
+        <Button aria-describedby={id} onClick={handleClick} variant="contained">
+          {isFollowed ? 'Unfollow' : 'Follow'}
+        </Button>
       }
       <Popover
         id={id}

@@ -3,5 +3,5 @@ from . import views
 from django.conf.urls import url
 
 urlpatterns = [
-    re_path(r'^(?:.*)/?$', views.index)
+    re_path('.*', views.index),
 ]

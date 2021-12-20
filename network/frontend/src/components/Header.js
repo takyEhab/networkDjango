@@ -86,6 +86,7 @@ export default function Header() {
               {navigationLinks.map((item) => (
 
                 <Link
+                style={{ textDecoration: 'none' }}
                   to={item.href}
                   key={item.name}
                 >
