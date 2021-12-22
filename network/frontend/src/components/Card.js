@@ -21,7 +21,7 @@ import { useSnackbar } from 'notistack';
 export default function RecipeReviewCard(props) {
   const { state, refresh, CONFIG } = useContext(UserContext)
   const [isLike, setLike] = useState(null);
-  const [edit, setEdit] = useState(props.post.post)
+  const [edit, setEdit] = useState("")
   const [isErr, setErr] = React.useState(false)
   const [isEdit, setIsEdit] = useState(true)
   const { enqueueSnackbar } = useSnackbar();
@@ -88,12 +88,10 @@ export default function RecipeReviewCard(props) {
 
         action={
           state.isLogedIn && (state.myInfo.username === props.post.writer ?
-
-            <IconButton onClick={() => setIsEdit(!isEdit)} >
+            <IconButton onClick={() => {setEdit(props.post.post); setIsEdit(!isEdit) }} >
               <EditIcon />
             </IconButton>
             : '')
-
         }
 
         title={props.post.writer}
@@ -115,7 +113,7 @@ export default function RecipeReviewCard(props) {
               style={{ width: '100%', marginTop: '1%' }}
               onChange={HandelChange}
             />
-            <Button onClick={HandleClick} >Save</Button>
+            <Button onClick={HandleClick}>Save</Button>
 
             <Slide direction="up" in={isErr} mountOnEnter unmountOnExit>
               <Alert severity="warning">you should at least type 5 letters</Alert>
