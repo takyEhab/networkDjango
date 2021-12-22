@@ -1,23 +1,24 @@
-import React, { useState, useEffect, useReducer, useMemo, useCallback } from 'react';
+import React, { lazy, useState, useEffect, useReducer, useMemo, useCallback, Suspense } from 'react';
 import ReactDOM from 'react-dom';
-import Header from './components/Header';
-import Register from './components/SignUp';
-import Login from './components/SignIn';
-import Following from './components/following'
-import './App.css';
-import SpringModal from './components/basicmodal'
-import User from './components/User';
-import Posts from './components/Posts';
 import { SnackbarProvider } from 'notistack';
 import {
-  // HashRouter as Router,
   BrowserRouter as Router,
   Switch,
-  Route,
-  Link
+  Route
 } from "react-router-dom";
 import { UserContext } from './components/userContext';
 import { api } from './components/axios'
+import'./App.css';
+import Header from './components/Header'
+import Loading from './components/Loading';
+
+const Register = lazy(() => import('./components/SignUp'));
+const Login = lazy(() => import('./components/SignIn'));
+const Following = lazy(() => import('./components/following'));
+const SpringModal = lazy(() => import('./components/basicmodal')); 
+const User = lazy(() => import('./components/User')); 
+const Posts = lazy(() => import('./components/Posts'));
+
 
 const initialState = {
   posts: null, isLoading: true, error: '',
@@ -95,34 +96,36 @@ export default function App() {
 
   return (
     <Router>
-      <Switch>
+      <UserContext.Provider value={ProviderValue} >
+        <Header />
+        
+        <Suspense fallback={<Loading />}>
 
-        <UserContext.Provider value={ProviderValue} >
-          <Header />
+          <Switch>
 
-          <Route exact path="/">
+            <Route exact path="/">
 
-            <SpringModal />
+              <SpringModal />
 
-            <Posts />
+              <Posts />
 
-          </Route>
+            </Route>
 
-          <Route exact path="/profile/:name" component={User} />
-          <Route exact path="/following" component={Following} />
-          <Route exact path="/register">
-            <Register />
-          </Route>
+            <Route exact path="/profile/:name" component={User} />
+            <Route exact path="/following" component={Following} />
+            <Route exact path="/register">
+              <Register />
+            </Route>
 
-          <Route exact path="/login" >
-            <Login />
-          </Route>
-        </UserContext.Provider>
+            <Route exact path="/login" >
+              <Login />
+            </Route>
 
-      </Switch>
+          </Switch>
+        </Suspense>
+      </UserContext.Provider>
     </Router >
   )
-
 }
 
 ReactDOM.render(<SnackbarProvider maxSnack={3}>

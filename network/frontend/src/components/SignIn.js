@@ -17,20 +17,7 @@ import Slide from '@mui/material/Slide';
 import { api } from './axios';
 import { useHistory } from "react-router-dom";
 import { useSnackbar } from 'notistack';
-import { UserContext } from './userContext';
-
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import { UserContext } from './userContext';  
 
 
 const theme = createTheme();
@@ -123,12 +110,7 @@ export default function SignIn() {
             >
               Log In
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
+            <Grid container justifyContent="flex-end">
 
               <Grid item>
                 <Link href="/register" variant="body2">
@@ -138,7 +120,6 @@ export default function SignIn() {
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>
   );

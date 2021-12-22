@@ -113,7 +113,7 @@ export default function User({ match, history }) {
           horizontal: 'left',
         }}
       >
-        <Typography sx={{ p: 2 }}>You Have To Be Loged in.</Typography>
+        <Typography sx={{ p: 2 }}>You have to be Loged in to follow someone.</Typography>
       </Popover>
       <br />
       {(userPosts !== null && userPosts !== 'loading') &&
