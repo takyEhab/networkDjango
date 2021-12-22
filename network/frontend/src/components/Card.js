@@ -60,9 +60,6 @@ export default function RecipeReviewCard(props) {
     } else { setErr(true) }
   }
 
-
-
-
   const likeFunc = () => {
     if (!state.isLogedIn) {
       return
