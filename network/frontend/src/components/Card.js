@@ -32,7 +32,7 @@ export default function RecipeReviewCard(props) {
     } else {
       setLike(false)
     }
-  }, [state.isLogedIn])
+  }, [state.isLogedIn, state.posts])
   const refreshSelected = () => {
     if (props.from === 'main') {
       refresh()
