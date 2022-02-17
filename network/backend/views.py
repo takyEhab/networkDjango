@@ -1,3 +1,4 @@
+from unicodedata import name
 from .models import Post, User, UserFollowing
 # from django.contrib.auth.models import User
 from .serializers import PostSerializer, UserSerializer, RegisterSerializer, LoginSerializer
@@ -15,7 +16,17 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from rest_framework.exceptions import APIException
 from django.shortcuts import get_object_or_404
 
+
 success = Response({"status": "success"}, status=status.HTTP_200_OK)
+    
+
+class SearchUsers(generics.ListAPIView):
+    serializer_class = UserSerializer
+    def get_queryset(self):
+        username = self.kwargs['username']
+        return User.objects.filter(username__contains=username)
+
+        # return User.objects.all()
 
 
 class UserViewSet(viewsets.ViewSet):

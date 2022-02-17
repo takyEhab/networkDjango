@@ -22,7 +22,8 @@ import {
 import { api } from './axios'
 
 import ListItem from "@mui/material/ListItem";
-import { UserContext } from './userContext'
+import { useSelector, useDispatch } from 'react-redux';
+import {logOut } from './store/actions'
 
 let navigationLinks = [];
 
@@ -44,21 +45,22 @@ const linkStyle = {
 }
 
 export default function Header() {
-  const { state, CONFIG, dispatch } = useContext(UserContext)
-  const { enqueueSnackbar } = useSnackbar();
+  const myInfoState = useSelector(state => state.myInfoState)
+  const dispatch = useDispatch()
+  const { enqueueSnackbar } = useSnackbar()
 
   const logout = () => {
-    api.post(`logout/`, {}, CONFIG)
+    api.post(`logout/`, {}, myInfoState.CONFIG)
       .then(() => {
-        dispatch({ type: 'NotLogedIn' })
-        enqueueSnackbar('Loged out!', { variant: 'info' });
+        dispatch(logOut())
+        enqueueSnackbar('Loged out!', { variant: 'info' })
 
       })
   }
 
-  if (state.isLogedIn) {
+  if (myInfoState.isLogedIn) {
     navigationLinks = [
-      { name: state.myInfo.username, href: `/profile/${state.myInfo.username}` },
+      { name: myInfoState.myInfo.username, href: `/profile/${myInfoState.myInfo.username}` },
       { name: "All Posts", href: "/" },
       { name: "Following", href: "/following" },
       { name: "Log out", href: "/" },
@@ -78,11 +80,10 @@ export default function Header() {
         <ToolBar disableGutters>
 
           <Avatar style={avatarStyle}>Network</Avatar>
-          {state.infoIsLoading ?
+          {myInfoState.infoIsLoading ?
             <Skeleton width={300} height={80} /> :
 
             <Hidden mdDown>
-
               {navigationLinks.map((item) => (
 
                 <Link
@@ -104,7 +105,6 @@ export default function Header() {
 
               ))}
             </Hidden>
-
 
           }
 
@@ -135,7 +135,7 @@ export default function Header() {
         <List>
           {navigationLinks.map((item) => (
             <ListItem key={item.name}>
-              <Link to={item.href}>
+              <Link style={{ textDecoration: 'none' }} to={item.href}>
                 <Button
                   style={linkStyle}
                   color="textPrimary"

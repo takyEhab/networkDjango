@@ -1,6 +1,4 @@
 import React, { lazy, useState, useEffect, useReducer, useMemo, useCallback, Suspense } from 'react';
-import ReactDOM from 'react-dom';
-import { SnackbarProvider } from 'notistack';
 import {
   BrowserRouter as Router,
   Switch,
@@ -11,6 +9,8 @@ import { api } from './components/axios'
 import'./App.css';
 import Header from './components/Header'
 import Loading from './components/Loading';
+import { useDispatch, useSelector } from 'react-redux';
+import { logIn, error, logOut, setData } from "./components/store/actions"
 
 const Register = lazy(() => import('./components/SignUp'));
 const Login = lazy(() => import('./components/SignIn'));
@@ -20,79 +20,35 @@ const User = lazy(() => import('./components/User'));
 const Posts = lazy(() => import('./components/Posts'));
 
 
-const initialState = {
-  posts: null, isLoading: true, error: '',
-  infoIsLoading: true, myInfo: null,
-  isLogedIn: false
-}
-
-const reducer = (current, action) => {
-  switch (action.type) {
-    case 'refresh':
-      return {
-        ...current,
-        isLoading: false,
-        posts: action.payload,
-        error: ''
-      }
-    case 'error':
-      return {
-        ...current,
-        isLoading: false,
-        posts: null,
-        error: "Something went wrong ,Can't Load Posts"
-      }
-    case 'LogedIn':
-      return {
-        ...current,
-        isLogedIn: true,
-        infoIsLoading: false,
-        myInfo: action.payload
-      }
-    case 'NotLogedIn':
-      localStorage.removeItem('knox');
-      return {
-        ...current,
-        isLogedIn: false,
-        myInfo: null,
-        infoIsLoading: false
-      }
-    default:
-      return current
-  }
-}
 
 export default function App() {
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const [CONFIG, setCONFIG] = useState({
-    headers: { Authorization: `Token ${localStorage.getItem('knox')}` }
-  })
-
-  useEffect(() => {
-    setCONFIG({ headers: { Authorization: `Token ${localStorage.getItem('knox')}` } })
-  }, [state.myInfo]);
+  const dispatch = useDispatch()
+  const posts = useSelector(state => state.postsState.posts)
+  const CONFIG = useSelector(state => state.myInfoState.CONFIG)
 
   useEffect(() => {
     refresh()
     api.get('me/', CONFIG)
-      .then(data => {
-        dispatch({ type: 'LogedIn', payload: data.data })
+      .then(info => {
+        dispatch(logIn(info.data, CONFIG))
       })
-      .catch(() => dispatch({ type: 'NotLogedIn' }))
+      .catch(() => {
+        dispatch(logOut())
+      })
   }, []);
 
   const refresh = useCallback(() => {
     api.get('posts/')
       .then(posts => {
-        dispatch({ type: 'refresh', payload: posts.data })
+        dispatch(setData(posts.data))
       })
-      .catch(() => dispatch({ type: 'error' }))
-  }, [state.posts])
+      .catch(() => {
+        dispatch(error())
+      })
+  }, [posts])
 
 
-
-  const ProviderValue = useMemo(() => ({ state, dispatch, refresh, CONFIG })
-    , [state, dispatch, refresh, CONFIG])
+  const ProviderValue = {refresh};
 
   return (
     <Router>
@@ -127,8 +83,3 @@ export default function App() {
     </Router >
   )
 }
-
-ReactDOM.render(<SnackbarProvider maxSnack={3}>
-  <App />
-</SnackbarProvider>
-  , document.getElementById('root'));

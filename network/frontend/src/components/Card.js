@@ -17,22 +17,25 @@ import Alert from '@mui/material/Alert';
 import Slide from '@mui/material/Slide';
 import EditIcon from '@mui/icons-material/Edit';
 import { useSnackbar } from 'notistack';
+import { useSelector } from 'react-redux';
 
 export default function RecipeReviewCard(props) {
-  const { state, refresh, CONFIG } = useContext(UserContext)
+  const { refresh } = useContext(UserContext)
+  const posts = useSelector(state => state.postsState.posts)
+  const myInfoState = useSelector(state => state.myInfoState)
   const [isLike, setLike] = useState(null);
-  const [edit, setEdit] = useState("")
-  const [isErr, setErr] = React.useState(false)
+  const [edit, setEdit] = useState('')
+  const [isErr, setErr] = useState(false)
   const [isEdit, setIsEdit] = useState(true)
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    if (props.post.UsersLikes.includes(state.isLogedIn && state.myInfo.id)) {
+    if (props.post.UsersLikes.includes(myInfoState.isLogedIn && myInfoState.myInfo.id)) {
       setLike(true);
     } else {
       setLike(false)
     }
-  }, [state.isLogedIn, state.posts])
+  }, [myInfoState.isLogedIn, posts])
   const refreshSelected = () => {
     if (props.from === 'main') {
       refresh()
@@ -43,11 +46,11 @@ export default function RecipeReviewCard(props) {
     }
   }
   const like = (id) => {
-    api.patch(`posts/${id}/like/`, {}, CONFIG)
+    api.patch(`posts/${id}/like/`, {}, myInfoState.CONFIG)
       .then(() => refreshSelected())
   }
   const editPost = (post, id) => {
-    api.patch(`posts/${id}/`, { post }, CONFIG)
+    api.patch(`posts/${id}/`, { post }, myInfoState.CONFIG)
       .then(() => refreshSelected())
   }
 
@@ -61,7 +64,7 @@ export default function RecipeReviewCard(props) {
   }
 
   const likeFunc = () => {
-    if (!state.isLogedIn) {
+    if (!myInfoState.isLogedIn) {
       return
     }
     isLike ? setLike(false) : setLike(true);
@@ -87,7 +90,7 @@ export default function RecipeReviewCard(props) {
         }
 
         action={
-          state.isLogedIn && (state.myInfo.username === props.post.writer ?
+          myInfoState.isLogedIn && (myInfoState.myInfo.username === props.post.writer ?
             <IconButton onClick={() => {setEdit(props.post.post); setIsEdit(!isEdit) }} >
               <EditIcon />
             </IconButton>

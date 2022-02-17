@@ -4,10 +4,14 @@ import { api } from './axios'
 import Card from './Card'
 import Pagination from '@mui/material/Pagination';
 import LinearProgress from '@mui/material/LinearProgress';
+import { useSelector } from 'react-redux';
 
 
 function Following() {
-  const { state } = useContext(UserContext)
+  // const { state } = useContext(UserContext)
+  const isLogedIn = useSelector(state => state.myInfoState.isLogedIn)
+  const myInfo = useSelector(state => state.myInfoState.myInfo)
+
   const [posts, setPosts] = useState('loading')
   const [following, setFollowing] = useState('')
   const [page, setPage] = useState(1);
@@ -16,15 +20,15 @@ function Following() {
     getFollowingPosts()
   }, [following])
   useEffect(() => {
-    if (state.isLogedIn) {
-      state.myInfo.following.forEach(item => {
+    if (isLogedIn) {
+      myInfo.following.forEach(item => {
         setFollowing(prevState => {
           return [...prevState, item.following_user_id];
         })
 
       });
     }
-  }, [state.myInfo])
+  }, [myInfo])
 
   const getFollowingPosts = useCallback(async () => {
     let res = await api.get(`posts/`).then(res => res.data)

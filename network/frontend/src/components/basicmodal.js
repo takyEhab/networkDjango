@@ -9,6 +9,7 @@ import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import CreateIcon from '@mui/icons-material/Create';
 import { UserContext } from './userContext'
+import { useSelector } from 'react-redux';
 
 const style = {
   position: 'absolute',
@@ -27,12 +28,12 @@ export default function BasicModal() {
 
   const handleCloseModel = () => setOpenModel(false);
 
-  const { state } = useContext(UserContext)
+  const isLogedIn = useSelector(state => state.myInfoState.isLogedIn)
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event) => {
-    if (state.isLogedIn) {
+    if (isLogedIn) {
       setOpenModel(true)
     } else {
       setAnchorEl(event.currentTarget);

@@ -1,20 +1,16 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState } from 'react';
 import Alert from '@mui/material/Alert';
 import Slide from '@mui/material/Slide';
 import AlertTitle from '@mui/material/AlertTitle';
 import Card from './Card'
-import { UserContext } from './userContext';
 import Pagination from '@mui/material/Pagination';
 import LinearProgress from '@mui/material/LinearProgress';
+import { useSelector } from 'react-redux';
 
 
-export default function Posts(props) {
-  const { state , refresh } = useContext(UserContext)
-  const [page, setPage] = React.useState(1);
-
-  useEffect(async () => {
-    refresh()
-  }, [])
+export default function Posts() {
+  const postsState = useSelector(state => state.postsState)
+  const [page, setPage] = useState(1);
 
   const handleChange = (event, value) => {
     setPage(value);
@@ -25,31 +21,33 @@ export default function Posts(props) {
   const last = page * postPerPage
   const first = last - postPerPage
 
-  const pageCount = Math.ceil(((state.posts !== null && state.error === '') && state.posts.length) / postPerPage)
+  const pageCount = Math.ceil(((postsState.posts !== null && postsState.error === '') && postsState.posts.length) / postPerPage)
 
   return (
     <div>
 
-      {(state.posts !== null && state.error === '') &&
-        state.posts.sort((a, b) => {
+      {(postsState.posts !== null && postsState.error === '') &&
+        postsState.posts.sort((a, b) => {
           return new Date(b.id) - new Date(a.id);
-        }).slice(first, last).map((item, i) => <Card
-          key={i} post={item}
-          from={'main'}
-        />)}
+        }).slice(first, last).map((item, i) => 
+          <Card
+            key={i} post={item}
+            from={'main'}
+          />
+        )}
 
-      {(state.isLoading || state.infoIsLoading) ?
+      {(postsState.isLoading) ?
         <LinearProgress sx={{ marginTop: '10%' }} /> :
         <Pagination size='large' count={pageCount} page={page} onChange={handleChange} />}
 
 
-      <Slide direction="up" in={state.error !== ''} mountOnEnter unmountOnExit>
+      <Slide direction="up" in={postsState.error !== ''} mountOnEnter unmountOnExit>
         <Alert sx={{
           margin: 'auto', width: 'auto', width: '40%',
           marginTop: '1%'
         }} severity="error">
           <AlertTitle>Error</AlertTitle>
-          {state.error}
+          {postsState.error}
         </Alert>
       </Slide>
 

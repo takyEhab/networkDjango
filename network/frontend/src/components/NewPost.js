@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import TextField from "@mui/material/TextField";
 import Button from '@mui/material/Button'
 import Alert from '@mui/material/Alert';
@@ -6,11 +6,14 @@ import Slide from '@mui/material/Slide';
 import { UserContext } from './userContext';
 import { useSnackbar } from 'notistack';
 import { api } from './axios'
+import { useSelector } from 'react-redux';
 
 export default function NewPost(props) {
-  const [post, setPost] = React.useState('')
-  const [isErr, setErr] = React.useState(false)
-  const { refresh, CONFIG } = useContext(UserContext)
+  const [post, setPost] = useState('')
+  const [isErr, setErr] = useState(false)
+  const { refresh } = useContext(UserContext)
+  const CONFIG = useSelector(state => state.myInfoState.CONFIG)
+
   const { enqueueSnackbar } = useSnackbar();
 
   const AddPost = (post) => {

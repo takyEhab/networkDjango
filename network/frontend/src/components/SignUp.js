@@ -16,13 +16,15 @@ import { useHistory } from "react-router-dom";
 import { useSnackbar } from 'notistack';
 import { api } from './axios'
 import { UserContext } from './userContext';
-
+import {logIn} from './store/actions'
+import { useSelector, useDispatch } from 'react-redux';
 
 const theme = createTheme();
 
 export default function SignUp(props) {
+  const dispatch = useDispatch();
 
-  const { dispatch } = useContext(UserContext)
+  // const { dispatch } = useContext(UserContext)
   const { enqueueSnackbar } = useSnackbar();
   const history = useHistory();
 
@@ -35,8 +37,9 @@ export default function SignUp(props) {
   const register = async (username, email, password, password2) => {
     try {
       let res = await api.post('register/', { username, email, password, password2 });
-      localStorage.setItem('knox', res.data.token)
-      dispatch({ type: 'LogedIn', payload: res.data.user });
+      const config = { headers: { Authorization: `Token ${res.data.token}` } }
+      localStorage.setItem('CONFIG', JSON.stringify(config))
+      dispatch(logIn(res.data.user, config));
 
       enqueueSnackbar('you are registered successfully!', { variant: 'success' });
       history.push('/');

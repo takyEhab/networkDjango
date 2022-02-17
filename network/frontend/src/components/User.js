@@ -8,9 +8,12 @@ import LinearProgress from '@mui/material/LinearProgress';
 import CircularProgress from '@mui/material/CircularProgress'
 import Popover from '@mui/material/Popover';
 import Typography from '@mui/material/Typography';
+import { useSelector } from 'react-redux';
 
 export default function User({ match, history }) {
-  const { state, CONFIG } = useContext(UserContext)
+  const { CONFIG } = useContext(UserContext)
+  const myInfoState = useSelector(state => state.myInfoState)
+
   const [user, setUser] = useState('loading')
   const [userPosts, setUserPosts] = useState('loading')
   const [isFollowed, setFollowed] = useState('')
@@ -26,13 +29,13 @@ export default function User({ match, history }) {
   }, [match.params.name])
 
   useEffect(() => {
-    if (state.isLogedIn) {
-      if (state.myInfo.username === match.params.name) setIsSame(true)
-      state.myInfo.following.forEach(item => {
+    if (myInfoState.isLogedIn) {
+      if (myInfoState.myInfo.username === match.params.name) setIsSame(true)
+      myInfoState.myInfo.following.forEach(item => {
         if (item.following_user_id === match.params.name) setFollowed(true);
       });
     }
-  }, [state.myInfo, match.params.name])
+  }, [myInfoState.myInfo, match.params.name])
 
   const GetUser = () => {
     api.get(`user/${match.params.name}/`)
@@ -69,7 +72,7 @@ export default function User({ match, history }) {
   const pageCount = Math.ceil(((userPosts !== null && userPosts !== 'loading') && userPosts.length) / postPerPage)
 
   const handleClick = (event) => {
-    if (state.isLogedIn) {
+    if (myInfoState.isLogedIn) {
       if (user && user !== 'loading') {
         follow(user.id)
         setFollowed(!isFollowed)
