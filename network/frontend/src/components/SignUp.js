@@ -130,7 +130,7 @@ export default function SignUp(props) {
                   name="password2"
                   label="Password Confirmation"
                   type="password"
-                  id="password"
+                  id="password2"
                   autoComplete="new-password"
                 />
               </Grid>

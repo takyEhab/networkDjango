@@ -9,14 +9,15 @@ import CircularProgress from '@mui/material/CircularProgress'
 import Popover from '@mui/material/Popover';
 import Typography from '@mui/material/Typography';
 import { useSelector } from 'react-redux';
+import { useSnackbar } from 'notistack';
 
-export default function User({ match, history }) {
-  const { CONFIG } = useContext(UserContext)
+export default function User({ match }) {
   const myInfoState = useSelector(state => state.myInfoState)
+  const { enqueueSnackbar } = useSnackbar();
 
   const [user, setUser] = useState('loading')
   const [userPosts, setUserPosts] = useState('loading')
-  const [isFollowed, setFollowed] = useState('')
+  const [isFollowed, setFollowed] = useState(false)
   const [page, setPage] = useState(1);
   const [anchorEl, setAnchorEl] = useState(null);
   const [isSame, setIsSame] = useState(false)
@@ -60,9 +61,15 @@ export default function User({ match, history }) {
     setPage(value);
     window.scrollTo({ top: 0, behavior: 'smooth' })
   };
-  const follow = (id) => {
-    api.patch(`follow/${id}/`, {}, CONFIG)
-      .then(() => GetUser())
+  const follow = (user) => {
+    api.patch(`follow/${user.id}/`, {}, myInfoState.CONFIG)
+      .then(() => {
+        enqueueSnackbar(isFollowed? `You UNFOLLOWED ${user.username}!`:`You FOLLOWED ${user.username}!`, { variant: 'info' });
+        // enqueueSnackbar(isF === 'follow' ? `, { variant: 'info' });
+
+        GetUser();
+      })
+      
   }
 
   const postPerPage = 10
@@ -74,7 +81,7 @@ export default function User({ match, history }) {
   const handleClick = (event) => {
     if (myInfoState.isLogedIn) {
       if (user && user !== 'loading') {
-        follow(user.id)
+        follow(user)
         setFollowed(!isFollowed)
       } else undefined
     } else {
