@@ -60,7 +60,7 @@ export default function App() {
           <Switch>
 
             <Route exact path="/">
-
+              
               <SpringModal />
 
               <Posts />

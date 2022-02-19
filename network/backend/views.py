@@ -93,32 +93,6 @@ class Follow(APIView):
         except User.DoesNotExist:
             raise Http404
 
-        # try:
-        #     user = User.objects.get(pk=pk)
-        #     UserFollowing.objects.create(
-        #         user_id=request.user, following_user_id=user)
-        #     return success
-
-        # except IntegrityError:
-        #     # do something
-        #     return Response({"error": "user is already followed"})
-        # except User.DoesNotExist:
-
-        #     return Response({"error": "user doesn't exist"})
-
-        # except Exception as e:
-        #     raise e
-
-    # def delete(self, request, pk, format=None):
-    #     # Unfollow
-    #     try:
-    #         user = User.objects.get(pk=pk)
-    #         UserFollowing.objects.filter(
-    #             user_id=request.user, following_user_id=user).delete()
-    #         return success
-    #     except User.DoesNotExist:
-    #         return Response({"error": "user doesn't exist"})
-
 
 class PostList(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]

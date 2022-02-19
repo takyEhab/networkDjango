@@ -18,7 +18,61 @@ import Slide from '@mui/material/Slide';
 import EditIcon from '@mui/icons-material/Edit';
 import { useSnackbar } from 'notistack';
 import { useSelector } from 'react-redux';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ClearIcon from '@mui/icons-material/Clear';
 
+
+import { styled, alpha } from '@mui/material/styles';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import ArchiveIcon from '@mui/icons-material/Archive';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import DeleteIcon from '@mui/icons-material/Delete';
+
+const cardStyle = { textAlign: 'center', width: 'auto', margin: 'auto', marginTop: '2%' }
+
+const StyledMenu = styled((props) => (
+  <Menu
+    elevation={0}
+    anchorOrigin={{
+      vertical: 'bottom',
+      horizontal: 'right',
+    }}
+    transformOrigin={{
+      vertical: 'top',
+      horizontal: 'right',
+    }}
+    {...props}
+  />
+))(({ theme }) => ({
+  '& .MuiPaper-root': {
+    borderRadius: 6,
+    marginTop: theme.spacing(1),
+    minWidth: 180,
+    color:
+      theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
+    boxShadow:
+      'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
+    '& .MuiMenu-list': {
+      padding: '4px 0',
+    },
+    '& .MuiMenuItem-root': {
+      '& .MuiSvgIcon-root': {
+        fontSize: 18,
+        color: theme.palette.text.secondary,
+        marginRight: theme.spacing(1.5),
+      },
+      '&:active': {
+        backgroundColor: alpha(
+          theme.palette.primary.main,
+          theme.palette.action.selectedOpacity,
+        ),
+      },
+    },
+  },
+}));
 export default function RecipeReviewCard(props) {
   const { refresh } = useContext(UserContext)
   const posts = useSelector(state => state.postsState.posts)
@@ -26,7 +80,9 @@ export default function RecipeReviewCard(props) {
   const [isLike, setLike] = useState(null);
   const [edit, setEdit] = useState('')
   const [isErr, setErr] = useState(false)
-  const [isEdit, setIsEdit] = useState(true)
+  const [isEdit, setIsEdit] = useState(false)
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
@@ -51,15 +107,29 @@ export default function RecipeReviewCard(props) {
   }
   const editPost = (post, id) => {
     api.patch(`posts/${id}/`, { post }, myInfoState.CONFIG)
-      .then(() => refreshSelected())
-  }
+      .then(() => {
+        refreshSelected()
+        enqueueSnackbar('Post Edited!', { variant: 'info' })
+      })
+      .catch(()=>{
+        enqueueSnackbar('Error while editing the post!', { variant: 'error' })
 
-  const HandleClick = () => {
+      })
+  }
+  const deletePost = (id) => {
+    api.delete(`posts/${id}/`, myInfoState.CONFIG)
+      .then(() => {
+        refreshSelected();
+        enqueueSnackbar('Post Deleted!', { variant: 'info' })
+      })
+      .catch(() => {
+        enqueueSnackbar('Error while deleting the post!', { variant: 'error' })
+      })
+  }
+  const HandleSave = () => {
     if (edit.length > 5) {
       editPost(edit, props.post.id)
-      enqueueSnackbar('Post Edited!', { variant: 'info' });
-      
-      setIsEdit(true);
+      setIsEdit(false);
     } else { setErr(true) }
   }
 
@@ -75,8 +145,13 @@ export default function RecipeReviewCard(props) {
     setEdit(event.target.value)
   }
 
-
-  const cardStyle = { textAlign: 'center', width: 'auto', margin: 'auto', marginTop: '2%' }
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <Card style={cardStyle} sx={{ maxWidth: 550 }}>
@@ -91,9 +166,14 @@ export default function RecipeReviewCard(props) {
 
         action={
           myInfoState.isLogedIn && (myInfoState.myInfo.username === props.post.writer ?
-            <IconButton onClick={() => {setEdit(props.post.post); setIsEdit(!isEdit) }} >
-              <EditIcon />
+            (isEdit ?
+            <IconButton onClick={() => setEdit(false)} >
+                <ClearIcon/>
             </IconButton>
+            :
+            <IconButton onClick={handleClick} >
+            <MoreVertIcon />
+          </IconButton>)
             : '')
         }
 
@@ -101,12 +181,27 @@ export default function RecipeReviewCard(props) {
 
         subheader={props.post.created_at}
       />
-
+    <StyledMenu
+    id="demo-customized-menu"
+    MenuListProps={{
+      'aria-labelledby': 'demo-customized-button',
+    }}
+    anchorEl={anchorEl}
+    open={open}
+    onClose={handleClose}
+  >
+    <MenuItem onClick={() => { setIsEdit(!isEdit); handleClose(); setEdit(props.post.post)}} disableRipple>
+      <EditIcon />
+      Edit
+    </MenuItem>
+    
+    <MenuItem onClick={()=> {handleClose(); deletePost(props.post.id)}} disableRipple>
+      <DeleteIcon />
+      Delete
+    </MenuItem>
+  </StyledMenu>
       <CardContent>
         {isEdit ?
-          <Typography variant="body2" color="text.secondary">
-            {props.post.post}
-          </Typography> :
           <>
             <TextField
               id="outlined-multiline-static"
@@ -116,12 +211,16 @@ export default function RecipeReviewCard(props) {
               style={{ width: '100%', marginTop: '1%' }}
               onChange={HandelChange}
             />
-            <Button onClick={HandleClick}>Save</Button>
+            <Button onClick={HandleSave}>Save</Button>
 
             <Slide direction="up" in={isErr} mountOnEnter unmountOnExit>
               <Alert severity="warning">you should at least type 5 letters</Alert>
             </Slide>
           </>
+          :
+          <Typography variant="body2" color="text.secondary">
+          {props.post.post}
+        </Typography>
         }
 
       </CardContent>
