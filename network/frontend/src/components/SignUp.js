@@ -15,7 +15,6 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useHistory } from "react-router-dom";
 import { useSnackbar } from 'notistack';
 import { api } from './axios'
-import { UserContext } from './userContext';
 import {logIn} from './store/actions'
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -23,8 +22,6 @@ const theme = createTheme();
 
 export default function SignUp(props) {
   const dispatch = useDispatch();
-
-  // const { dispatch } = useContext(UserContext)
   const { enqueueSnackbar } = useSnackbar();
   const history = useHistory();
 

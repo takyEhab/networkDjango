@@ -1,5 +1,4 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { UserContext } from './userContext';
 import { api } from './axios'
 import Card from './Card'
 import Pagination from '@mui/material/Pagination';
@@ -8,7 +7,6 @@ import { useSelector } from 'react-redux';
 
 
 function Following() {
-  // const { state } = useContext(UserContext)
   const isLogedIn = useSelector(state => state.myInfoState.isLogedIn)
   const myInfo = useSelector(state => state.myInfoState.myInfo)
 

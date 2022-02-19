@@ -8,7 +8,8 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { blue } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { UserContext } from './userContext'
+import { funcContext } from './funcContext';
+
 import { Link } from "react-router-dom";
 import { api } from './axios'
 import TextField from "@mui/material/TextField";
@@ -30,6 +31,8 @@ import FileCopyIcon from '@mui/icons-material/FileCopy';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import DeleteIcon from '@mui/icons-material/Delete';
+
+import Zoom from '@mui/material/Zoom';
 
 const cardStyle = { textAlign: 'center', width: 'auto', margin: 'auto', marginTop: '2%' }
 
@@ -74,7 +77,7 @@ const StyledMenu = styled((props) => (
   },
 }));
 export default function RecipeReviewCard(props) {
-  const { refresh } = useContext(UserContext)
+  const { refresh } = useContext(funcContext)
   const posts = useSelector(state => state.postsState.posts)
   const myInfoState = useSelector(state => state.myInfoState)
   const [isLike, setLike] = useState(null);
@@ -112,7 +115,7 @@ export default function RecipeReviewCard(props) {
         enqueueSnackbar('Post Edited!', { variant: 'info' })
       })
       .catch(()=>{
-        enqueueSnackbar('Error while editing the post!', { variant: 'error' })
+        enqueueSnackbar('Error while editing the post!\n try to Refresh the page and try again', { variant: 'error' })
 
       })
   }
@@ -123,7 +126,7 @@ export default function RecipeReviewCard(props) {
         enqueueSnackbar('Post Deleted!', { variant: 'info' })
       })
       .catch(() => {
-        enqueueSnackbar('Error while deleting the post!', { variant: 'error' })
+        enqueueSnackbar('Error while deleting the post!\n try to Refresh the page and try again', { variant: 'error' })
       })
   }
   const HandleSave = () => {
@@ -154,6 +157,7 @@ export default function RecipeReviewCard(props) {
   };
 
   return (
+    <Zoom in={true}>
     <Card style={cardStyle} sx={{ maxWidth: 550 }}>
       <CardHeader
         avatar={
@@ -190,7 +194,7 @@ export default function RecipeReviewCard(props) {
     open={open}
     onClose={handleClose}
   >
-    <MenuItem onClick={() => { setIsEdit(!isEdit); handleClose(); setEdit(props.post.post)}} disableRipple>
+    <MenuItem onClick={() => {setIsEdit(!isEdit); handleClose(); setEdit(props.post.post)}} disableRipple>
       <EditIcon />
       Edit
     </MenuItem>
@@ -232,5 +236,6 @@ export default function RecipeReviewCard(props) {
         </IconButton>
       </CardActions>
     </Card>
+    </Zoom>
   );
 }

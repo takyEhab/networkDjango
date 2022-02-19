@@ -4,7 +4,7 @@ import {
   Switch,
   Route
 } from "react-router-dom";
-import { UserContext } from './components/userContext';
+import { funcContext } from './components/funcContext';
 import { api } from './components/axios'
 import'./App.css';
 import Header from './components/Header'
@@ -52,7 +52,7 @@ export default function App() {
 
   return (
     <Router>
-      <UserContext.Provider value={ProviderValue} >
+      <funcContext.Provider value={ProviderValue} >
         <Header />
         
         <Suspense fallback={<Loading />}>
@@ -79,7 +79,7 @@ export default function App() {
 
           </Switch>
         </Suspense>
-      </UserContext.Provider>
+      </funcContext.Provider>
     </Router >
   )
 }

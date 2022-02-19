@@ -17,14 +17,12 @@ import Slide from '@mui/material/Slide';
 import { api } from './axios';
 import { useHistory } from "react-router-dom";
 import { useSnackbar } from 'notistack';
-import { UserContext } from './userContext';  
 import { useDispatch } from 'react-redux';
 import { logIn } from './store/actions';
 
 const theme = createTheme();
 
 export default function SignIn() {
-  // const { dispatch } = useContext(UserContext)
   const dispatch = useDispatch();
 
   const [error, setError] = React.useState({

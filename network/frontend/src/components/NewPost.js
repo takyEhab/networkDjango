@@ -3,7 +3,7 @@ import TextField from "@mui/material/TextField";
 import Button from '@mui/material/Button'
 import Alert from '@mui/material/Alert';
 import Slide from '@mui/material/Slide';
-import { UserContext } from './userContext';
+import { funcContext } from './funcContext';
 import { useSnackbar } from 'notistack';
 import { api } from './axios'
 import { useSelector } from 'react-redux';
@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 export default function NewPost(props) {
   const [post, setPost] = useState('')
   const [isErr, setErr] = useState(false)
-  const { refresh } = useContext(UserContext)
+  const { refresh } = useContext(funcContext)
   const CONFIG = useSelector(state => state.myInfoState.CONFIG)
 
   const { enqueueSnackbar } = useSnackbar();

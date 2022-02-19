@@ -23,7 +23,7 @@ import ListItem from "@mui/material/ListItem";
 import { useSelector, useDispatch } from 'react-redux';
 import {logOut } from './store/actions'
 import Search from './SearchBar'
-let navigationLinks = [];
+import { funcContext } from './funcContext'
 
 
 const avatarStyle = {
@@ -57,6 +57,7 @@ export default function Header() {
   const myInfoState = useSelector(state => state.myInfoState)
   const dispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
+  const { refresh } = useContext(funcContext)
 
   const searchUser = () => {
     setOpenModel(true)
@@ -69,22 +70,21 @@ export default function Header() {
 
       })
   }
-
+  let navigationLinks = [
+    { name: "All Posts", href: "/", func: () => {refresh()} },
+    { name: "Search For a User", href: "#", func: () => {searchUser()} },
+  ];
   if (myInfoState.isLogedIn) {
-    navigationLinks = [
-      { name: myInfoState.myInfo.username, href: `/profile/${myInfoState.myInfo.username}` },
-      { name: "All Posts", href: "/" },
-      { name: "Search For a User", href: "#" },
+    navigationLinks.push(    
       { name: "Following", href: "/following" },
-      { name: "Log out", href: "/" },
-    ]
+      { name: myInfoState.myInfo.username, href: `/profile/${myInfoState.myInfo.username}` },
+      { name: "Log out", href: "/" , func: ()=>{logout()}},
+    )
   } else {
-    navigationLinks = [
-      { name: "All Posts", href: "/" },
-      { name: "Search For a User", href: "#" },
+    navigationLinks.push(
       { name: "Log In", href: "/login" },
       { name: "Register", href: "/register" },
-    ]
+    )
   }
   const [open, setOpen] = useState(false);
   const [openModel, setOpenModel] = useState(false);
@@ -129,7 +129,7 @@ export default function Header() {
                     color="textPrimary"
                     variant="button"
                     underline="none"
-                    onClick={item.name === 'Log out' ? logout : (item.name === 'Search For a User' ? searchUser: undefined)}
+                    onClick={item.func ? item.func : undefined }
                   >
                     {item.name}
                   </Button>
@@ -174,7 +174,7 @@ export default function Header() {
                   color="textPrimary"
                   variant="button"
                   underline="none"
-                  onClick={item.name === 'Log out' ? logout : (item.name === 'Search For a User' ? searchUser: undefined)}
+                  onClick={item.func ? item.func : undefined }
                 >
                   {item.name}
                 </Button>

@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback, useContext } from 'react'
 import Button from '@mui/material/Button';
-import { UserContext } from './userContext';
 import { api } from './axios'
 import Card from './Card'
 import Pagination from '@mui/material/Pagination';
