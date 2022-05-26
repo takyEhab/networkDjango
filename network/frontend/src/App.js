@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import { funcContext } from './components/funcContext';
 import { api } from './components/axios'
-import'./App.css';
+import './App.css';
 import Header from './components/Header'
 import Loading from './components/Loading';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,8 +15,8 @@ import { logIn, error, logOut, setData } from "./components/store/actions"
 const Register = lazy(() => import('./components/SignUp'));
 const Login = lazy(() => import('./components/SignIn'));
 const Following = lazy(() => import('./components/following'));
-const SpringModal = lazy(() => import('./components/basicmodal')); 
-const User = lazy(() => import('./components/User')); 
+const SpringModal = lazy(() => import('./components/basicmodal'));
+const User = lazy(() => import('./components/User'));
 const Posts = lazy(() => import('./components/Posts'));
 
 
@@ -48,19 +48,19 @@ export default function App() {
   }, [posts])
 
 
-  const ProviderValue = {refresh};
+  const ProviderValue = { refresh };
 
   return (
     <Router>
       <funcContext.Provider value={ProviderValue} >
         <Header />
-        
+
         <Suspense fallback={<Loading />}>
 
           <Switch>
 
             <Route exact path="/">
-              
+
               <SpringModal />
 
               <Posts />

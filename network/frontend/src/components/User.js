@@ -63,12 +63,12 @@ export default function User({ match }) {
   const follow = (user) => {
     api.patch(`follow/${user.id}/`, {}, myInfoState.CONFIG)
       .then(() => {
-        enqueueSnackbar(isFollowed? `You UNFOLLOWED ${user.username}!`:`You FOLLOWED ${user.username}!`, { variant: 'info' });
+        enqueueSnackbar(isFollowed ? `You UNFOLLOWED ${user.username}!` : `You FOLLOWED ${user.username}!`, { variant: 'info' });
         // enqueueSnackbar(isF === 'follow' ? `, { variant: 'info' });
 
         GetUser();
       })
-      
+
   }
 
   const postPerPage = 10

@@ -76,6 +76,21 @@ const StyledMenu = styled((props) => (
     },
   },
 }));
+
+
+const generateColor = (str) => {
+  var hash = 0;
+  for (var i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  var color = '#';
+  for (var i = 0; i < 3; i++) {
+    var value = (hash >> (i * 8)) & 0xFF;
+    color += ('00' + value.toString(16)).substr(-2);
+  }
+  return color;
+}
+
 export default function RecipeReviewCard(props) {
   const { refresh } = useContext(funcContext)
   const posts = useSelector(state => state.postsState.posts)
@@ -114,7 +129,7 @@ export default function RecipeReviewCard(props) {
         refreshSelected()
         enqueueSnackbar('Post Edited!', { variant: 'info' })
       })
-      .catch(()=>{
+      .catch(() => {
         enqueueSnackbar('Error while editing the post!\n try to Refresh the page and try again', { variant: 'error' })
 
       })
@@ -158,84 +173,84 @@ export default function RecipeReviewCard(props) {
 
   return (
     <Zoom in={true}>
-    <Card style={cardStyle} sx={{ maxWidth: 550 }}>
-      <CardHeader
-        avatar={
-          <Link style={{ textDecoration: 'initial' }} to={`/profile/${props.post.writer}`}>
-            <Avatar sx={{ bgcolor: blue[500] }} aria-label="recipe">
-              {props.post.writer.charAt(0).toUpperCase()}
-            </Avatar>
-          </Link>
-        }
+      <Card style={cardStyle} sx={{ maxWidth: 550 }}>
+        <CardHeader
+          avatar={
+            <Link style={{ textDecoration: 'initial' }} to={`/profile/${props.post.writer}`}>
+              <Avatar sx={{ bgcolor: generateColor(props.post.writer) }} aria-label="recipe">
+                {props.post.writer.charAt(0).toUpperCase()}
+              </Avatar>
+            </Link>
+          }
 
-        action={
-          myInfoState.isLogedIn && (myInfoState.myInfo.username === props.post.writer ?
-            (isEdit ?
-            <IconButton onClick={() => setEdit(false)} >
-                <ClearIcon/>
-            </IconButton>
+          action={
+            myInfoState.isLogedIn && (myInfoState.myInfo.username === props.post.writer ?
+              (isEdit ?
+                <IconButton onClick={() => setIsEdit(false)} >
+                  <ClearIcon />
+                </IconButton>
+                :
+                <IconButton onClick={handleClick} >
+                  <MoreVertIcon />
+                </IconButton>)
+              : '')
+          }
+
+          title={props.post.writer}
+
+          subheader={props.post.created_at}
+        />
+        <StyledMenu
+          id="demo-customized-menu"
+          MenuListProps={{
+            'aria-labelledby': 'demo-customized-button',
+          }}
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+        >
+          <MenuItem onClick={() => { setIsEdit(!isEdit); handleClose(); setEdit(props.post.post) }} disableRipple>
+            <EditIcon />
+            Edit
+          </MenuItem>
+
+          <MenuItem onClick={() => { handleClose(); deletePost(props.post.id) }} disableRipple>
+            <DeleteIcon />
+            Delete
+          </MenuItem>
+        </StyledMenu>
+        <CardContent>
+          {isEdit ?
+            <>
+              <TextField
+                id="outlined-multiline-static"
+                value={edit}
+                multiline
+                rows={5}
+                style={{ width: '100%', marginTop: '1%' }}
+                onChange={HandelChange}
+              />
+              <Button onClick={HandleSave}>Save</Button>
+
+              <Slide direction="up" in={isErr} mountOnEnter unmountOnExit>
+                <Alert severity="warning">you should at least type 5 letters</Alert>
+              </Slide>
+            </>
             :
-            <IconButton onClick={handleClick} >
-            <MoreVertIcon />
-          </IconButton>)
-            : '')
-        }
+            <Typography variant="body2" color="text.secondary">
+              {props.post.post}
+            </Typography>
+          }
 
-        title={props.post.writer}
+        </CardContent>
 
-        subheader={props.post.created_at}
-      />
-    <StyledMenu
-    id="demo-customized-menu"
-    MenuListProps={{
-      'aria-labelledby': 'demo-customized-button',
-    }}
-    anchorEl={anchorEl}
-    open={open}
-    onClose={handleClose}
-  >
-    <MenuItem onClick={() => {setIsEdit(!isEdit); handleClose(); setEdit(props.post.post)}} disableRipple>
-      <EditIcon />
-      Edit
-    </MenuItem>
-    
-    <MenuItem onClick={()=> {handleClose(); deletePost(props.post.id)}} disableRipple>
-      <DeleteIcon />
-      Delete
-    </MenuItem>
-  </StyledMenu>
-      <CardContent>
-        {isEdit ?
-          <>
-            <TextField
-              id="outlined-multiline-static"
-              value={edit}
-              multiline
-              rows={5}
-              style={{ width: '100%', marginTop: '1%' }}
-              onChange={HandelChange}
-            />
-            <Button onClick={HandleSave}>Save</Button>
+        <CardActions disableSpacing>
 
-            <Slide direction="up" in={isErr} mountOnEnter unmountOnExit>
-              <Alert severity="warning">you should at least type 5 letters</Alert>
-            </Slide>
-          </>
-          :
-          <Typography variant="body2" color="text.secondary">
-          {props.post.post}
-        </Typography>
-        }
-
-      </CardContent>
-
-      <CardActions disableSpacing>
-
-        <IconButton onClick={likeFunc} style={{ color: isLike ? 'red' : 'gray' }} aria-label="add to favorites">
-          <FavoriteIcon />{props.post.likes == 0 ? '' : props.post.likes}
-        </IconButton>
-      </CardActions>
-    </Card>
+          <IconButton onClick={likeFunc} style={{ color: isLike ? 'red' : 'gray' }} aria-label="add to favorites">
+            <FavoriteIcon />{props.post.likes == 0 ? '' : props.post.likes}
+          </IconButton>
+        </CardActions>
+      </Card>
     </Zoom>
   );
 }
